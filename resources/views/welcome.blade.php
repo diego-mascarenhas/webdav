@@ -33,25 +33,38 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .site-shell { position: relative; min-height: 100dvh; }
+        .site-shell { 
+            position: relative; 
+            min-height: 100vh;
+            min-height: 100dvh; 
+        }
 
         .site-shell__background {
             position: fixed;
-            inset: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
             z-index: 0;
             pointer-events: none;
         }
 
         .site-shell__background canvas {
             position: absolute;
-            inset: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
             width: 100%;
             height: 100%;
         }
 
         .grain {
             position: fixed;
-            inset: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
             z-index: 1;
             pointer-events: none;
             opacity: 0.035;
@@ -149,6 +162,7 @@
         .site-content { position: relative; z-index: 2; }
 
         .hero {
+            min-height: calc(100vh - var(--header-height));
             min-height: calc(100dvh - var(--header-height));
             display: flex;
             align-items: center;
@@ -288,13 +302,17 @@
             padding: 1.5rem;
             opacity: 0;
             transform: translateY(1.5rem);
+            -webkit-transform: translateY(1.5rem);
             transition: border-color 0.3s, box-shadow 0.3s;
+            -webkit-transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .card.is-visible {
             opacity: 1;
             transform: translateY(0);
+            -webkit-transform: translateY(0);
             transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, box-shadow 0.3s;
+            -webkit-transition: opacity 0.6s ease, -webkit-transform 0.6s ease, border-color 0.3s, box-shadow 0.3s;
         }
 
         .card:hover {
@@ -388,8 +406,27 @@
         .meta { font-size: 0.8rem; opacity: 0.5; }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(1.25rem); }
-            to { opacity: 1; transform: translateY(0); }
+            from { 
+                opacity: 0; 
+                transform: translateY(1.25rem); 
+                -webkit-transform: translateY(1.25rem);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+                -webkit-transform: translateY(0);
+            }
+        }
+        
+        @-webkit-keyframes fadeUp {
+            from { 
+                opacity: 0; 
+                -webkit-transform: translateY(1.25rem);
+            }
+            to { 
+                opacity: 1; 
+                -webkit-transform: translateY(0);
+            }
         }
 
         @keyframes pulse {
@@ -491,7 +528,11 @@ php artisan dav:password tu@email.com</pre>
     <script>
         (function () {
             const canvas = document.getElementById('blobs');
+            if (!canvas) return;
+            
             const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+            
             let w, h;
 
             const blobs = [
@@ -509,7 +550,11 @@ php artisan dav:password tu@email.com</pre>
 
             function draw() {
                 ctx.clearRect(0, 0, w, h);
-                ctx.filter = 'blur(80px)';
+                
+                // Safari compatibility: check if filter is supported
+                if ('filter' in ctx) {
+                    ctx.filter = 'blur(80px)';
+                }
 
                 blobs.forEach(function (b) {
                     b.x += b.vx;
@@ -523,7 +568,10 @@ php artisan dav:password tu@email.com</pre>
                     ctx.fill();
                 });
 
-                ctx.filter = 'none';
+                if ('filter' in ctx) {
+                    ctx.filter = 'none';
+                }
+                
                 requestAnimationFrame(draw);
             }
 
@@ -531,18 +579,27 @@ php artisan dav:password tu@email.com</pre>
             window.addEventListener('resize', resize);
             draw();
 
+            // Enhanced Safari compatibility for IntersectionObserver
             if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelectorAll('.card').forEach(function (card, i) {
-                    card.style.transitionDelay = (i * 0.08) + 's';
-                    new IntersectionObserver(function (entries, obs) {
-                        entries.forEach(function (entry) {
-                            if (entry.isIntersecting) {
-                                entry.target.classList.add('is-visible');
-                                obs.unobserve(entry.target);
-                            }
-                        });
-                    }, { threshold: 0.15 }).observe(card);
-                });
+                const cards = document.querySelectorAll('.card');
+                if (window.IntersectionObserver) {
+                    cards.forEach(function (card, i) {
+                        card.style.transitionDelay = (i * 0.08) + 's';
+                        new IntersectionObserver(function (entries, obs) {
+                            entries.forEach(function (entry) {
+                                if (entry.isIntersecting) {
+                                    entry.target.classList.add('is-visible');
+                                    obs.unobserve(entry.target);
+                                }
+                            });
+                        }, { threshold: 0.15 }).observe(card);
+                    });
+                } else {
+                    // Fallback for older browsers
+                    cards.forEach(function (card) {
+                        card.classList.add('is-visible');
+                    });
+                }
             } else {
                 document.querySelectorAll('.card').forEach(function (card) {
                     card.classList.add('is-visible');

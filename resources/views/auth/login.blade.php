@@ -29,25 +29,38 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .site-shell { position: relative; min-height: 100dvh; }
+        .site-shell { 
+            position: relative; 
+            min-height: 100vh;
+            min-height: 100dvh; 
+        }
 
         .site-shell__background {
             position: fixed;
-            inset: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
             z-index: 0;
             pointer-events: none;
         }
 
         .site-shell__background canvas {
             position: absolute;
-            inset: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
             width: 100%;
             height: 100%;
         }
 
         .grain {
             position: fixed;
-            inset: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
             z-index: 1;
             pointer-events: none;
             opacity: 0.035;
@@ -133,6 +146,7 @@
         .site-content { position: relative; z-index: 2; }
 
         .login-page {
+            min-height: calc(100vh - var(--header-height));
             min-height: calc(100dvh - var(--header-height));
             display: flex;
             align-items: center;
@@ -152,6 +166,7 @@
             border-radius: 1.25rem;
             padding: 1.75rem;
             animation: fadeUp 0.6s ease forwards;
+            -webkit-animation: fadeUp 0.6s ease forwards;
         }
 
         .login-card h1 {
@@ -263,8 +278,27 @@
         .back-link:hover { color: #fff; }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(1.25rem); }
-            to { opacity: 1; transform: translateY(0); }
+            from { 
+                opacity: 0; 
+                transform: translateY(1.25rem); 
+                -webkit-transform: translateY(1.25rem);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+                -webkit-transform: translateY(0);
+            }
+        }
+        
+        @-webkit-keyframes fadeUp {
+            from { 
+                opacity: 0; 
+                -webkit-transform: translateY(1.25rem);
+            }
+            to { 
+                opacity: 1; 
+                -webkit-transform: translateY(0);
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -331,7 +365,11 @@
     <script>
         (function () {
             const canvas = document.getElementById('blobs');
+            if (!canvas) return;
+            
             const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+            
             let w, h;
 
             const blobs = [
@@ -349,7 +387,11 @@
 
             function draw() {
                 ctx.clearRect(0, 0, w, h);
-                ctx.filter = 'blur(80px)';
+                
+                // Safari compatibility: check if filter is supported
+                if ('filter' in ctx) {
+                    ctx.filter = 'blur(80px)';
+                }
 
                 blobs.forEach(function (b) {
                     b.x += b.vx;
@@ -363,7 +405,10 @@
                     ctx.fill();
                 });
 
-                ctx.filter = 'none';
+                if ('filter' in ctx) {
+                    ctx.filter = 'none';
+                }
+                
                 requestAnimationFrame(draw);
             }
 
