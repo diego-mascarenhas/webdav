@@ -426,8 +426,6 @@
                 </a>
                 <nav class="nav">
                     <a href="/" class="is-active">Home</a>
-                    <a href="{{ route('contacts.index') }}">Contactos</a>
-                    <a href="{{ route('calendar.index') }}">Calendario</a>
                     <a href="{{ route('login') }}">Entrar</a>
                 </nav>
             </div>
