@@ -36,5 +36,6 @@
     </form>
 
     <p style="margin-top: 2rem; font-size: 0.875rem;"><a href="/">Volver</a></p>
+    @include('partials.analytics')
 </body>
 </html>

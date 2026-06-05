@@ -62,5 +62,6 @@
         <code>GET {{ url('/api/contacts') }}?email={{ urlencode($user->email) }}</code>
         con cabecera <code>Authorization: Bearer …</code> (<code>DAV_API_TOKEN</code>).
     </p>
+    @include('partials.analytics')
 </body>
 </html>

@@ -349,12 +349,9 @@
 
         .card li strong { color: var(--text); font-weight: 500; }
 
-        code, .code-block {
+        code {
             font-family: 'Roboto Mono', ui-monospace, monospace;
             font-size: 0.85em;
-        }
-
-        code {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 0.15rem 0.45rem;
@@ -374,6 +371,8 @@
             line-height: 1.7;
             overflow-x: auto;
             white-space: pre;
+            font-family: 'Roboto Mono', ui-monospace, monospace;
+            font-size: 0.85em;
         }
 
         .card a:not(.btn) {
@@ -461,9 +460,9 @@
 
                 <article class="card">
                     <h2>Primer uso</h2>
-                    <pre class="code-block"><code>php artisan migrate
+                    <pre class="code-block">php artisan migrate
 php artisan dav:setup
-php artisan dav:password tu@email.com</code></pre>
+php artisan dav:password tu@email.com</pre>
                 </article>
 
                 <article class="card">
@@ -553,5 +552,6 @@ php artisan dav:password tu@email.com</code></pre>
             }
         })();
     </script>
+    @include('partials.analytics')
 </body>
 </html>

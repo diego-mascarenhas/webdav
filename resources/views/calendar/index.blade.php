@@ -69,5 +69,6 @@
         API: <code>GET {{ url('/api/events') }}?email={{ urlencode($user->email) }}</code>
         con <code>Authorization: Bearer …</code>.
     </p>
+    @include('partials.analytics')
 </body>
 </html>
