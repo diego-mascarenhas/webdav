@@ -503,10 +503,8 @@ php artisan dav:password tu@email.com</pre>
                 <article class="card">
                     <h2>iPhone / iPad</h2>
                     <ul>
-                        <li><strong>Contactos:</strong> Ajustes → Contactos → Cuentas → Añadir cuenta → Otro → Añadir contactos CardDAV</li>
-                        <li><strong>Calendario:</strong> Ajustes → Calendario → Cuentas → Añadir cuenta → Otro → Añadir calendario CalDAV</li>
-                        <li>Servidor: <code>{{ parse_url($davUrl, PHP_URL_HOST) }}</code></li>
-                        <li>Ruta avanzada: <code>/dav/</code> si el cliente lo pide</li>
+                        <li><strong>Contactos:</strong> Ajustes → Apps → Contactos → Cuentas de contactos → Añadir cuenta → Añadir otra cuenta → Añadir cuenta CardDAV</li>
+                        <li><strong>Calendario:</strong> Ajustes → Apps → Calendario → Cuentas de Calendario → Añadir cuenta → Añadir otra cuenta → Cuenta CalDAV</li>
                     </ul>
                 </article>
 

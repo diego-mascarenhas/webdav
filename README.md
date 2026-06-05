@@ -61,8 +61,8 @@ APP_URL=https://carddav.test
 
 Tras `dav:setup` obtendrás email, contraseña y URL. En iOS:
 
-1. **Contactos:** Ajustes → Contactos → Cuentas → Añadir cuenta → CardDAV  
-2. **Calendario:** Ajustes → Calendario → Cuentas → Añadir cuenta → CalDAV  
+1. **Contactos:** Ajustes → Apps → Contactos → Cuentas de contactos → Añadir cuenta → Añadir otra cuenta → Añadir cuenta CardDAV  
+2. **Calendario:** Ajustes → Apps → Calendario → Cuentas de Calendario → Añadir cuenta → Añadir otra cuenta → Cuenta CalDAV  
 
 En **Android**, usa [DAVx⁵](https://www.davx5.com/) con la misma URL y credenciales.
 
