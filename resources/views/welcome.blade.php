@@ -95,56 +95,18 @@
             flex-shrink: 0;
         }
 
-        .brand__mark {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            border: 1.5px solid rgba(255, 255, 255, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.04);
-            position: relative;
-            overflow: hidden;
+        .brand__logo {
+            display: block;
+            height: auto;
+            width: 9.375rem;
         }
 
-        .brand__mark::before,
-        .brand__mark::after {
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(1px);
+        @media (min-width: 640px) {
+            .brand__logo { width: 11.25rem; }
         }
 
-        .brand__mark::before {
-            width: 0.65rem;
-            height: 0.65rem;
-            background: var(--accent-magenta);
-            top: 0.45rem;
-            left: 0.55rem;
-        }
-
-        .brand__mark::after {
-            width: 0.5rem;
-            height: 0.5rem;
-            background: var(--accent-red);
-            bottom: 0.5rem;
-            right: 0.45rem;
-        }
-
-        .brand__text { display: flex; flex-direction: column; line-height: 1.15; }
-
-        .brand__name {
-            font-weight: 700;
-            font-size: 1.05rem;
-            letter-spacing: 0.04em;
-        }
-
-        .brand__tagline {
-            font-size: 0.7rem;
-            opacity: 0.55;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
+        @media (min-width: 1024px) {
+            .brand__logo { width: 10.625rem; }
         }
 
         .nav {
@@ -455,11 +417,13 @@
         <header class="site-header">
             <div class="site-header__inner">
                 <a href="/" class="brand" aria-label="Ir al inicio">
-                    <div class="brand__mark"></div>
-                    <div class="brand__text">
-                        <span class="brand__name">{{ config('app.name') }}</span>
-                        <span class="brand__tagline">CardDAV · CalDAV</span>
-                    </div>
+                    <img
+                        src="{{ asset('idoneo-dark.svg') }}"
+                        alt="IDONEO"
+                        class="brand__logo"
+                        width="336"
+                        height="125"
+                    >
                 </a>
                 <nav class="nav">
                     <a href="/" class="is-active">Home</a>
