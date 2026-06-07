@@ -27,6 +27,25 @@ curl -sS -H "Authorization: Bearer TU_TOKEN" \
   "https://carddav.idoneo.dev/api/contacts?email=usuario@ejemplo.com"
 ```
 
+## API de usuarios (Humano → WebDAV)
+
+| Método | Ruta | Uso |
+|--------|------|-----|
+| `POST` | `/api/users` | Crear usuario DAV |
+| `POST` | `/api/users/link` | Validar credenciales existentes |
+| `GET` | `/api/users?email=` | Consultar usuario |
+| `PUT` | `/api/users/password` | Cambiar contraseña |
+
+## API de sync (lectura/escritura)
+
+| Recurso | GET | POST/PUT | DELETE |
+|---------|-----|----------|--------|
+| Contactos | `/api/contacts?email=` | `/api/contacts` | `/api/contacts/{uid}` |
+| Eventos | `/api/events?email=` | `/api/events` | `/api/events/{uid}` |
+| Tareas | `/api/tasks?email=` | `/api/tasks` | `/api/tasks/{uid}` |
+
+Todas requieren `Authorization: Bearer {DAV_API_TOKEN}` y `?email=` del principal.
+
 Respuesta JSON:
 
 ```json
@@ -66,10 +85,9 @@ Campos obligatorios en Humano: `team_id`, `user_id` o `creator_id`, `status_id`,
 
 ## Próximo paso en Humano
 
-Crear p. ej. `php artisan carddav:import --email=...` que:
+Desde **Team Settings** (`/team/{team}/settings`):
 
-1. Llame a la API anterior con `DAV_API_TOKEN`.
-2. Por cada ítem, `Contact::updateOrCreate` por `data->carddav_uid`.
-3. Programe en el scheduler cada 15–60 min.
-
-¿Quieres que implementemos ese comando dentro del repo **humano**?
+1. Configura en Humano `.env`: `WEBDAV_BASE_URL` y `WEBDAV_API_TOKEN` (mismo token que `DAV_API_TOKEN`).
+2. **Crear cuenta** o **Vincular existente** desde la tarjeta WebDAV.
+3. Activa toggles de sync en el grupo `webdav`.
+4. El scheduler ejecuta `webdav:sync-data` cada 15 minutos.

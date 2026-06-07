@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Dav\Services\DavPrincipalService;
-use App\Models\User;
+use App\Dav\Services\DavUserProvisioner;
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 
 class DavSetupCommand extends Command
 {
@@ -17,36 +15,31 @@ class DavSetupCommand extends Command
 
     protected $description = 'Create a DAV user with address book and calendar';
 
-    public function handle(DavPrincipalService $davPrincipal): int
+    public function handle(DavUserProvisioner $provisioner): int
     {
         $email = $this->option('email') ?? $this->ask('Email (used as login)', 'dav@carddav.test');
         $name = $this->option('name') ?? $this->ask('Display name', 'DAV User');
         $username = $this->option('username') ?? $this->ask('DAV username (principal)', config('dav.principal', 'admin'));
-        $password = $this->option('password') ?? Str::password(16);
+        $password = $this->option('password');
 
-        if (! $this->option('password')) {
-            $this->components->info("Generated password: {$password}");
-        }
-
-        $user = User::query()->updateOrCreate(
-            ['email' => $email],
-            [
-                'name' => $name,
-                'dav_username' => $username,
-                'password' => $password,
-                'email_verified_at' => now(),
-            ]
+        $result = $provisioner->create(
+            email: $email,
+            name: $name,
+            davUsername: $username,
+            password: $password,
         );
 
-        $davPrincipal->provision($user);
+        if (! $this->option('password')) {
+            $this->components->info("Generated password: {$result['password']}");
+        }
 
-        $baseUrl = rtrim(config('app.url'), '/').'/'.trim(config('laravelsabre.path', 'dav'), '/');
+        $payload = $provisioner->toAccountPayload($result['user']);
 
         $this->newLine();
-        $this->components->twoColumnDetail('Server URL', $baseUrl.'/');
-        $this->components->twoColumnDetail('Username', $email);
-        $this->components->twoColumnDetail('Password', $this->option('password') ? '(as provided)' : $password);
-        $this->components->twoColumnDetail('Principal', $davPrincipal->principalUri($user));
+        $this->components->twoColumnDetail('Server URL', $payload['dav_url']);
+        $this->components->twoColumnDetail('Username', $payload['email']);
+        $this->components->twoColumnDetail('Password', $this->option('password') ? '(as provided)' : $result['password']);
+        $this->components->twoColumnDetail('Principal', $payload['principal']);
         $this->newLine();
         $this->line('Configure iPhone/Android with the server URL above and these credentials.');
         $this->line('Use HTTPS in production (e.g. https://carddav.test/dav/).');
