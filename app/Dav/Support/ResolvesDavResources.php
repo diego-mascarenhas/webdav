@@ -79,4 +79,12 @@ trait ResolvesDavResources
     {
         return str_replace(['/', '\\'], '-', $uid).'.ics';
     }
+
+    /**
+     * Sabre DAV stores etags in VARBINARY(32) — must fit 32 bytes (md5 hex, no quotes).
+     */
+    protected function contentEtag(string $data): string
+    {
+        return md5($data);
+    }
 }

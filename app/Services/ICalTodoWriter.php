@@ -35,7 +35,7 @@ class ICalTodoWriter
         $uri = $this->calendarObjectUri($uid);
         $calendarData = $this->buildCalendar($uid, $payload);
         $now = time();
-        $etag = '"'.sha1($calendarData).'"';
+        $etag = $this->contentEtag($calendarData);
         $size = strlen($calendarData);
         $dueAt = isset($payload['due_at']) ? Carbon::parse($payload['due_at']) : null;
 

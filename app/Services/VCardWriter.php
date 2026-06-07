@@ -33,7 +33,7 @@ class VCardWriter
         $uri = $this->cardUri($uid);
         $cardData = $this->buildVCard($uid, $payload);
         $now = time();
-        $etag = '"'.sha1($cardData).'"';
+        $etag = $this->contentEtag($cardData);
         $size = strlen($cardData);
 
         $existing = \Illuminate\Support\Facades\DB::table('cards')
