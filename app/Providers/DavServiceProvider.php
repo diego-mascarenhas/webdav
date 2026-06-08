@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use LaravelSabre\LaravelSabre;
 use Sabre\CalDAV\CalendarRoot;
 use Sabre\CalDAV\Plugin as CalDAVPlugin;
+use Sabre\CalDAV\Schedule\Plugin as CalDAVSchedulePlugin;
 use Sabre\CardDAV\AddressBookRoot;
 use Sabre\CardDAV\Plugin as CardDAVPlugin;
 use Sabre\DAV\Auth\Plugin as AuthPlugin;
@@ -44,6 +45,7 @@ class DavServiceProvider extends ServiceProvider
         yield new AuthPlugin(new BasicAuthBackend);
         yield new CardDAVPlugin;
         yield new CalDAVPlugin;
+        yield new CalDAVSchedulePlugin;
         yield new AclPlugin;
         yield new SyncPlugin;
 
