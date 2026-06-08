@@ -111,6 +111,16 @@ else
   grep -E 'calendar-home-set|addressbook-home-set|schedule-inbox|schedule-outbox|current-user-principal|href|exception|error' "$BODY_FILE" | head -25 || head -30 "$BODY_FILE"
 fi
 
+if [[ "$code" == "207" ]]; then
+  detected_name="$(tr '\n' ' ' < "$BODY_FILE" | sed -n 's/.*current-user-principal><d:href>\/dav\/principals\/\([^\/]*\)\/.*/\1/p')"
+  if [[ -n "$detected_name" && "$detected_name" != "$PRINCIPAL_NAME" ]]; then
+    echo ""
+    echo "AVISO: el servidor devuelve principal=${detected_name} (pediste ${PRINCIPAL_NAME}). Usando ${detected_name} en 3b–5."
+    PRINCIPAL_NAME="$detected_name"
+    PRINCIPAL="principals/${PRINCIPAL_NAME}"
+  fi
+fi
+
 section "3b. Principal detail (/dav/principals/${PRINCIPAL_NAME}/)"
 code=$(http_code -X PROPFIND "${BASE_URL}/dav/principals/${PRINCIPAL_NAME}/" -H 'Depth: 0' "${XML_CT[@]}" --data "$PROPFIND_PRINCIPAL")
 echo "HTTP $code"
