@@ -9,8 +9,14 @@ use App\Http\Controllers\ContactController;
 use App\Http\Middleware\EnsureDavApiToken;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/.well-known/carddav', fn () => redirect('/dav/', 301));
-Route::get('/.well-known/caldav', fn () => redirect('/dav/', 301));
+Route::get('/.well-known/carddav', fn () => redirect()->away(
+    rtrim(config('app.url'), '/').'/'.trim(config('laravelsabre.path', 'dav'), '/').'/',
+    301
+));
+Route::get('/.well-known/caldav', fn () => redirect()->away(
+    rtrim(config('app.url'), '/').'/'.trim(config('laravelsabre.path', 'dav'), '/').'/',
+    301
+));
 Route::redirect('/dav', '/dav/', 301);
 
 Route::get('/', function () {

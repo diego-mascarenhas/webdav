@@ -14,7 +14,7 @@ use Sabre\DAV\Auth\Plugin as AuthPlugin;
 use Sabre\DAV\Browser\Plugin as BrowserPlugin;
 use Sabre\DAV\Sync\Plugin as SyncPlugin;
 use Sabre\DAVACL\Plugin as AclPlugin;
-use Sabre\DAVACL\PrincipalCollection;
+use Sabre\CalDAV\Principal\Collection as CalDAVPrincipalCollection;
 use Sabre\DAVACL\PrincipalBackend\PDO as PrincipalBackend;
 use Sabre\CalDAV\Backend\PDO as CalDAVBackend;
 use Sabre\CardDAV\Backend\PDO as CardDAVBackend;
@@ -33,7 +33,7 @@ class DavServiceProvider extends ServiceProvider
         $principalBackend = new PrincipalBackend($pdo);
 
         return [
-            new PrincipalCollection($principalBackend),
+            new CalDAVPrincipalCollection($principalBackend),
             new AddressBookRoot($principalBackend, new CardDAVBackend($pdo)),
             new CalendarRoot($principalBackend, new CalDAVBackend($pdo)),
         ];
