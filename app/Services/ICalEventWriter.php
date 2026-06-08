@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Dav\Support\DavBlob;
 use App\Dav\Support\ResolvesDavResources;
 use App\Models\User;
 use Carbon\Carbon;
@@ -47,7 +48,7 @@ class ICalEventWriter
             ->first();
 
         $row = [
-            'calendardata' => $calendarData,
+            'calendardata' => DavBlob::forWrite($calendarData),
             'lastmodified' => $now,
             'etag' => $etag,
             'size' => $size,
@@ -112,7 +113,7 @@ class ICalEventWriter
         $startsAt = Carbon::parse($payload['starts_at']);
         $endsAt = isset($payload['ends_at']) ? Carbon::parse($payload['ends_at']) : $startsAt->copy()->addHour();
 
-        $calendar = new VCalendar();
+        $calendar = new VCalendar;
         $event = $calendar->add('VEVENT', [
             'UID' => $uid,
             'SUMMARY' => $payload['summary'],

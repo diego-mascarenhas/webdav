@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Dav\Services\DavPrincipalService;
+use App\Dav\Support\DavBlob;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -46,12 +47,14 @@ class ICalTodoReader
      */
     private function parseTodo(object $row): ?array
     {
-        if (empty($row->calendardata)) {
+        $calendarData = DavBlob::toString($row->calendardata);
+
+        if ($calendarData === '') {
             return null;
         }
 
         try {
-            $calendar = Reader::read($row->calendardata);
+            $calendar = Reader::read($calendarData);
         } catch (\Throwable) {
             return null;
         }

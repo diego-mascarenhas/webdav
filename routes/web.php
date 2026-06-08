@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\SyncWriteController;
-use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\UserController as DavUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\TaskController;
 use App\Http\Middleware\EnsureDavApiToken;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +37,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });
 

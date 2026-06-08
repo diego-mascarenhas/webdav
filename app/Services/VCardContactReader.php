@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Dav\Services\DavPrincipalService;
+use App\Dav\Support\DavBlob;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Sabre\VObject\Component;
 use Sabre\VObject\Reader;
 
 class VCardContactReader
@@ -37,17 +39,19 @@ class VCardContactReader
             ->filter();
     }
 
-  /**
+    /**
      * @return array{uid: string, full_name: string, name: string, surname: string, email: ?string, phone: ?string, updated_at: ?int}|null
      */
     private function parseCard(object $row): ?array
     {
-        if (empty($row->carddata)) {
+        $cardData = DavBlob::toString($row->carddata);
+
+        if ($cardData === '') {
             return null;
         }
 
         try {
-            $vCard = Reader::read($row->carddata);
+            $vCard = Reader::read($cardData);
         } catch (\Throwable) {
             return null;
         }
@@ -70,7 +74,7 @@ class VCardContactReader
         ];
     }
 
-    private function splitName(string $fullName, \Sabre\VObject\Component $vCard): array
+    private function splitName(string $fullName, Component $vCard): array
     {
         if (isset($vCard->N)) {
             $parts = $vCard->N->getParts();
@@ -90,7 +94,7 @@ class VCardContactReader
         ];
     }
 
-    private function firstProperty(\Sabre\VObject\Component $vCard, string $property): ?string
+    private function firstProperty(Component $vCard, string $property): ?string
     {
         if (! isset($vCard->{$property})) {
             return null;

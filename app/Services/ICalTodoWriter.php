@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Dav\Support\DavBlob;
 use App\Dav\Support\ResolvesDavResources;
 use App\Models\User;
 use Carbon\Carbon;
@@ -45,7 +46,7 @@ class ICalTodoWriter
             ->first();
 
         $row = [
-            'calendardata' => $calendarData,
+            'calendardata' => DavBlob::forWrite($calendarData),
             'lastmodified' => $now,
             'etag' => $etag,
             'size' => $size,
@@ -108,7 +109,7 @@ class ICalTodoWriter
     {
         $completed = (bool) ($payload['completed'] ?? false);
 
-        $calendar = new VCalendar();
+        $calendar = new VCalendar;
         $todo = $calendar->add('VTODO', [
             'UID' => $uid,
             'SUMMARY' => $payload['summary'],

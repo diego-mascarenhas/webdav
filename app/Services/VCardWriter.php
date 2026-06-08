@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Dav\Support\DavBlob;
 use App\Dav\Support\ResolvesDavResources;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Sabre\VObject\Component\VCard;
 
@@ -36,15 +38,15 @@ class VCardWriter
         $etag = $this->contentEtag($cardData);
         $size = strlen($cardData);
 
-        $existing = \Illuminate\Support\Facades\DB::table('cards')
+        $existing = DB::table('cards')
             ->where('addressbookid', $addressBookId)
             ->where('uri', $uri)
             ->first();
 
         if ($existing === null) {
-            \Illuminate\Support\Facades\DB::table('cards')->insert([
+            DB::table('cards')->insert([
                 'addressbookid' => $addressBookId,
-                'carddata' => $cardData,
+                'carddata' => DavBlob::forWrite($cardData),
                 'uri' => $uri,
                 'lastmodified' => $now,
                 'etag' => $etag,
@@ -52,10 +54,10 @@ class VCardWriter
             ]);
             $operation = self::OPERATION_ADD;
         } else {
-            \Illuminate\Support\Facades\DB::table('cards')
+            DB::table('cards')
                 ->where('id', $existing->id)
                 ->update([
-                    'carddata' => $cardData,
+                    'carddata' => DavBlob::forWrite($cardData),
                     'lastmodified' => $now,
                     'etag' => $etag,
                     'size' => $size,
@@ -82,7 +84,7 @@ class VCardWriter
 
         $uri = $this->cardUri($uid);
 
-        $deleted = \Illuminate\Support\Facades\DB::table('cards')
+        $deleted = DB::table('cards')
             ->where('addressbookid', $addressBookId)
             ->where('uri', $uri)
             ->delete();
